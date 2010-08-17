@@ -1,0 +1,11 @@
+## Interface: 30300
+## Title: PredatorLoot
+## Author: Mischback
+## Version: ALPHA 0.5
+## DefaultState: disabled
+## SavedVariables: PredatorLootOptions
+
+settings.lua
+localization.lua
+templates.xml
+core.lua
