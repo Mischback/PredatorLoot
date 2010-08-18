@@ -42,6 +42,7 @@
 				GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT')
 				GameTooltip:SetText(PredatorLootStrings.MasterLooterAnnounceRulesButton)
 			</OnEnter>
+			<OnClick>PredatorLootFunctions.AnnounceLootRules()</OnClick>
 		</Scripts>
 	</Button>
 
@@ -57,163 +58,169 @@
 		</Scripts>
 	</Button>
 
+	<!-- Template for "Need"-button (dice) -->
+	<Button name="PredatorLootRollButtonNeedTemplate" inherits="PredatorLootRollButtonTemplate" virtual="true">
+		<Scripts>
+			<OnEnter>
+				GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT')
+				GameTooltip:SetText(NEED)
+			</OnEnter>
+		</Scripts>
+		<NormalTexture file="Interface\Buttons\UI-GroupLoot-Dice-Up" />
+		<HighlightTexture file="Interface\Buttons\UI-GroupLoot-Dice-Highlight" alphaMode="ADD" />
+		<PushedTexture file="Interface\Buttons\UI-GroupLoot-Dice-Down" />
+	</Button>
+	
+	<!-- Template for "Greed"-button (coin) -->
+	<Button name="PredatorLootRollButtonGreedTemplate" inherits="PredatorLootRollButtonTemplate" virtual="true">
+		<Scripts>
+			<OnEnter>
+				GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT')
+				GameTooltip:SetText(GREED)
+			</OnEnter>
+		</Scripts>
+		<NormalTexture file="Interface\Buttons\UI-GroupLoot-Coin-Up" />
+		<HighlightTexture file="Interface\Buttons\UI-GroupLoot-Coin-Highlight" alphaMode="ADD" />
+		<PushedTexture file="Interface\Buttons\UI-GroupLoot-Coin-Down" />
+	</Button>
+
+	<!-- Template for "DisEnchant"-button -->
+	<Button name="PredatorLootRollButtonDisEnchantTemplate" inherits="PredatorLootRollButtonTemplate" virtual="true">
+		<Scripts>
+			<OnEnter>
+				GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT')
+				GameTooltip:SetText(ROLL_DISENCHANT)
+			</OnEnter>
+		</Scripts>
+		<NormalTexture file="Interface\Buttons\UI-GroupLoot-DE-Up"/>
+		<HighlightTexture file="Interface\Buttons\UI-GroupLoot-DE-Highlight" alphaMode="ADD"/>
+		<PushedTexture file="Interface\Buttons\UI-GroupLoot-DE-Down"/>
+	</Button>
+	
+	<!-- Template for "Pass"-button (X) -->
+	<Button name="PredatorLootRollButtonPassTemplate" inherits="PredatorLootRollButtonTemplate" virtual="true">
+		<Scripts>
+			<OnEnter>
+				GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT')
+				GameTooltip:SetText(PASS)
+			</OnEnter>
+		</Scripts>
+		<NormalTexture file="Interface\Buttons\UI-GroupLoot-Pass-Up" />
+		<HighlightTexture file="Interface\Buttons\UI-GroupLoot-Pass-Up" alphaMode="ADD" />
+		<PushedTexture file="Interface\Buttons\UI-GroupLoot-Pass-Up" />
+	</Button>
+
 	<!-- This is the string which is used for the item name -->
 	<FontString name="PredatorLootFrameNameTemplate" font="Fonts\FRIZQT__.TTF" text="ItemName" justifyH="LEFT" virtual="true">
-		<FontHeight>
-			<AbsValue val="12"/>
-		</FontHeight>
+		<FontHeight><AbsValue val="12"/></FontHeight>
 		<Shadow>
-			<Offset>
-				<AbsDimension x="1" y="1"/>
-			</Offset>
+			<Offset><AbsDimension x="1" y="1"/></Offset>
 			<Color r="0" g="0" b="0"/>
 		</Shadow>
 	</FontString>
 
 	<!-- This is the string which is used for the item count -->
 	<FontString name="PredatorLootFrameCountTemplate" font="Fonts\FRIZQT__.TTF" text="" virtual="true">
-		<FontHeight>
-			<AbsValue val="11"/>
-		</FontHeight>
+		<FontHeight><AbsValue val="11"/></FontHeight>
 		<Shadow>
-			<Offset>
-				<AbsDimension x="1" y="1"/>
-			</Offset>
+			<Offset><AbsDimension x="1" y="1"/></Offset>
 			<Color r="0" g="0" b="0"/>
 		</Shadow>
 	</FontString>
 
 	<!-- This is the loot-icon (including the COUNT-string) -->
 	<Button name="PredatorLootFrameIconTemplate" inherits="ItemButtonTemplate" virtual="true">
-		<Size>
-			<AbsDimension x="30" y="30" />
-		</Size>
+		<Size><AbsDimension x="30" y="30" /></Size>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture>
-					<Color r="0" g="0" b="0" a="1" />
-				</Texture>
+				<Texture><Color r="0" g="0" b="0" a="1" /></Texture>
 			</Layer>
 			<Layer level="ARTWORK">
 				<FontString name="$parentLootCount" inherits="PredatorLootFrameCountTemplate">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="-3" y="2" />
-							</Offset>
+							<Offset><AbsDimension x="-3" y="2" /></Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderTopRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderTop" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderTop" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderRight" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderRight" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.33333" bottom="0.66666" />
 				</Texture>
-				<Texture name="$parentBorderBottom" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderBottom" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderLeft" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.33333" bottom="0.66666" />
@@ -237,136 +244,96 @@
 
 	<!-- This is the template for a single loot row -->
 	<Frame name="PredatorLootFrameRowTemplate" id="0" virtual="true">
-		<Size>
-			<AbsDimension x="0" y="24" />
-		</Size>
+		<Size><AbsDimension x="0" y="24" /></Size>
 		<Anchors>
 			<Anchor point="LEFT" relativeTo="$parent">
-				<Offset>
-					<AbsDimension x="5" y="0" />
-				</Offset>
+				<Offset><AbsDimension x="5" y="0" /></Offset>
 			</Anchor>
 			<Anchor point="RIGHT" relativeTo="$parent">
-				<Offset>
-					<AbsDimension x="-15" y="0" />
-				</Offset>
+				<Offset><AbsDimension x="-15" y="0" /></Offset>
 			</Anchor>
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture>
-					<Color r="0" g="0" b="0" a="1" />
-				</Texture>
+				<Texture><Color r="0" g="0" b="0" a="1" /></Texture>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderTopRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderTop" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderTop" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderRight" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderRight" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.33333" bottom="0.66666" />
 				</Texture>
-				<Texture name="$parentBorderBottom" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderBottom" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderLeft" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.33333" bottom="0.66666" />
@@ -376,14 +343,10 @@
 				<FontString name="$parentName" inherits="PredatorLootFrameNameTemplate">
 					<Anchors>
 						<Anchor point="LEFT">
-							<Offset>
-								<AbsDimension x="20" y="0" />
-							</Offset>
+							<Offset><AbsDimension x="20" y="0" /></Offset>
 						</Anchor>
 						<Anchor point="RIGHT">
-							<Offset>
-								<AbsDimension x="-5" y="0" />
-							</Offset>
+							<Offset><AbsDimension x="-5" y="0" /></Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
@@ -393,9 +356,7 @@
 			<Button name="$parentIcon" inherits="PredatorLootFrameIconTemplate">
 				<Anchors>
 					<Anchor point="LEFT">
-						<Offset>
-							<AbsDimension x="-15" y="0" />
-						</Offset>
+						<Offset><AbsDimension x="-15" y="0" /></Offset>
 					</Anchor>
 				</Anchors>
 			</Button>
@@ -405,247 +366,458 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="PredatorLootMasterLooterDropDown" inherits="UIDropDownMenuTemplate" id="1">
-		<!--<Layers>
+	<!-- This is the template for a roll frame -->
+	<Frame name="PredatorLootGroupLootTemplate" enableMouse="true" movable="true" virtual="true">
+		<Size><AbsDimension x="175" y="50" /></Size>
+		<Anchors><Anchor point="CENTER" /></Anchors>
+		<Frames>
+			<Button name="$parentIcon" inherits="PredatorLootFrameIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT">
+						<Offset><AbsDimension x="-10" y="0" /></Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEnter>PredatorLootFunctions.ShowGroupLootTooltip(self)</OnEnter>
+					<OnClick>PredatorLootFunctions.HandleMasterLooterIconClick(self, button)</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentNeedButton" inherits="PredatorLootRollButtonNeedTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT">
+						<Offset><AbsDimension x="5" y="0" /></Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>PredatorLootFunctions.GroupLootRoll(self, 1)</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentGreedButton" inherits="PredatorLootRollButtonGreedTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentNeedButton" relativePoint="RIGHT">
+						<Offset><AbsDimension x="5" y="0" /></Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>PredatorLootFunctions.GroupLootRoll(self, 2)</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentDisEnchantButton" inherits="PredatorLootRollButtonDisEnchantTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentGreedButton" relativePoint="RIGHT">
+						<Offset><AbsDimension x="5" y="0" /></Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>PredatorLootFunctions.GroupLootRoll(self, 3)</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentPassButton" inherits="PredatorLootRollButtonPassTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentDisEnchantButton" relativePoint="RIGHT">
+						<Offset><AbsDimension x="5" y="0" /></Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>PredatorLootFunctions.GroupLootRoll(self, 0)</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="$parentNameFrame">
+				<Size><AbsDimension x="175" y="17" /></Size>
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="$parent" relativePoint="TOP">
+						<Offset><AbsDimension x="0" y="5" /></Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture><Color r="0" g="0" b="0" a="0.7" /></Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentBorderTopLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Size><AbsDimension x="10" y="10" /></Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset><AbsDimension x="-4" y="4"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.33333" top="0" bottom="0.33333" />
+						</Texture>
+						<Texture name="$parentBorderTopRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Size><AbsDimension x="10" y="10" /></Size>
+							<Anchors>
+								<Anchor point="TOPRIGHT">
+									<Offset><AbsDimension x="4" y="4"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.66666" right="1" top="0" bottom="0.33333" />
+						</Texture>
+						<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Size><AbsDimension x="10" y="10" /></Size>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT">
+									<Offset><AbsDimension x="-4" y="-4"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.33333" top="0.66666" bottom="1" />
+						</Texture>
+						<Texture name="$parentBorderBottomRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Size><AbsDimension x="10" y="10" /></Size>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT">
+									<Offset><AbsDimension x="4" y="-4"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.66666" right="1" top="0.66666" bottom="1" />
+						</Texture>
+						<Texture name="$parentBorderTop" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.33333" right="0.66666" top="0" bottom="0.33333" />
+						</Texture>
+						<Texture name="$parentBorderRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.66666" right="1" top="0.33333" bottom="0.66666" />
+						</Texture>
+						<Texture name="$parentBorderBottom" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.33333" right="0.66666" top="0.66666" bottom="1" />
+						</Texture>
+						<Texture name="$parentBorderLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.33333" top="0.33333" bottom="0.66666" />
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentName" inherits="PredatorLootFrameNameTemplate">
+							<Anchors>
+								<Anchor point="LEFT">
+									<Offset><AbsDimension x="5" y="1" /></Offset>
+								</Anchor>
+								<Anchor point="RIGHT">
+									<Offset><AbsDimension x="-5" y="1" /></Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<StatusBar name="$parentTimer" minValue="0" maxValue="60000" defaultValue="0" drawLayer="BACKGROUND">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="0" y="-5" /></Offset>
+					</Anchor>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+						<Offset><AbsDimension x="0" y="-15" /></Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture><Color r="0" g="0" b="0" a="0.7" /></Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentBorderTopLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Size><AbsDimension x="10" y="10" /></Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset><AbsDimension x="-4" y="4"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.33333" top="0" bottom="0.33333" />
+						</Texture>
+						<Texture name="$parentBorderTopRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Size><AbsDimension x="10" y="10" /></Size>
+							<Anchors>
+								<Anchor point="TOPRIGHT">
+									<Offset><AbsDimension x="4" y="4"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.66666" right="1" top="0" bottom="0.33333" />
+						</Texture>
+						<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Size><AbsDimension x="10" y="10" /></Size>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT">
+									<Offset><AbsDimension x="-4" y="-4"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.33333" top="0.66666" bottom="1" />
+						</Texture>
+						<Texture name="$parentBorderBottomRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Size><AbsDimension x="10" y="10" /></Size>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT">
+									<Offset><AbsDimension x="4" y="-4"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.66666" right="1" top="0.66666" bottom="1" />
+						</Texture>
+						<Texture name="$parentBorderTop" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.33333" right="0.66666" top="0" bottom="0.33333" />
+						</Texture>
+						<Texture name="$parentBorderRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.66666" right="1" top="0.33333" bottom="0.66666" />
+						</Texture>
+						<Texture name="$parentBorderBottom" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.33333" right="0.66666" top="0.66666" bottom="1" />
+						</Texture>
+						<Texture name="$parentBorderLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
+									<Offset><AbsDimension x="0" y="0"/></Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.33333" top="0.33333" bottom="0.66666" />
+						</Texture>
+					</Layer>
+				</Layers>
+				<BarTexture name="$parentBar" file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" />
+				<BarColor r="0.95" g="0.95" b="0.95" />
+				<Scripts>
+					<OnUpdate>PredatorLootFunctions.GroupLootTimerOnUpdate(self)</OnUpdate>
+				</Scripts>
+			</StatusBar>
+		</Frames>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture><Color r="0" g="0" b="0" a="0.7" /></Texture>
+			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderTopRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderTop" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderTop" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderRight" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderRight" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.33333" bottom="0.66666" />
 				</Texture>
-				<Texture name="$parentBorderBottom" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderBottom" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderLeft" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.33333" bottom="0.66666" />
 				</Texture>
 			</Layer>
-		</Layers>-->
+		</Layers>
+		<Scripts>
+			<OnLoad>this:RegisterForDrag("LeftButton")</OnLoad>
+			<OnDragStart>
+ 				this:StartMoving();
+ 				this.isMoving = true;
+			</OnDragStart>
+			<OnDragStop>
+ 				this:StopMovingOrSizing();
+ 				this.isMoving = false;
+			</OnDragStop>
+		</Scripts>
 	</Frame>
 
-	<Frame name="PredatorLootMasterLooterManagementTemplate" enableMouse="true" movable="true" virtual="true">
-		<Size>
-			<AbsDimension x="175" y="50" />
-		</Size>
-		<Anchors>
-			<Anchor point="CENTER" />
-		</Anchors>
+	<Frame name="PredatorLootMasterLooterDropDown" inherits="UIDropDownMenuTemplate" id="1" />
+
+	<Frame name="PredatorLootMasterLooterManagementTemplate" hidden="true" enableMouse="true" movable="true" virtual="true">
+		<Size><AbsDimension x="175" y="50" /></Size>
+		<Anchors><Anchor point="CENTER" /></Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture>
-					<Color r="0" g="0" b="0" a="0.7" />
-				</Texture>
+				<Texture><Color r="0" g="0" b="0" a="0.7" /></Texture>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderTopRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderTop" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderTop" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderRight" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderRight" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.33333" bottom="0.66666" />
 				</Texture>
-				<Texture name="$parentBorderBottom" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderBottom" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderLeft" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.33333" bottom="0.66666" />
@@ -656,9 +828,7 @@
 			<Button name="$parentIcon" inherits="PredatorLootFrameIconTemplate">
 				<Anchors>
 					<Anchor point="LEFT">
-						<Offset>
-							<AbsDimension x="-10" y="0" />
-						</Offset>
+						<Offset><AbsDimension x="-10" y="0" /></Offset>
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -669,9 +839,7 @@
 			<Button name="$parentRollStart" inherits="PredatorLootRollStartButtonTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="5" y="0" />
-						</Offset>
+						<Offset><AbsDimension x="5" y="0" /></Offset>
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -681,9 +849,7 @@
 			<Button name="$parentRollEnd" inherits="PredatorLootRollEndButtonTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentRollStart" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="5" y="0" />
-						</Offset>
+						<Offset><AbsDimension x="5" y="0" /></Offset>
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -693,18 +859,14 @@
 			<Button name="$parentAnnounceRules" inherits="PredatorLootAnnounceRulesButtonTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentRollEnd" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="5" y="0" />
-						</Offset>
+						<Offset><AbsDimension x="5" y="0" /></Offset>
 					</Anchor>
 				</Anchors>
 			</Button>
 			<Button name="$parentConfig" inherits="PredatorLootConfigButtonTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentAnnounceRules" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="5" y="0" />
-						</Offset>
+						<Offset><AbsDimension x="5" y="0" /></Offset>
 					</Anchor>
 				</Anchors>
 			</Button>
@@ -723,127 +885,89 @@
 	</Frame>
 
 	<Frame name="PredatorLootFrameTemplate" hidden="true" enableMouse="true" movable="true" virtual="true">
-		<Size>
-			<AbsDimension x="200" y="50" />
-		</Size>
-		<Anchors>
-			<Anchor point="CENTER" />
-		</Anchors>
+		<Size><AbsDimension x="200" y="50" /></Size>
+		<Anchors><Anchor point="CENTER" /></Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture>
-					<Color r="0" g="0" b="0" a="0.7" />
-				</Texture>
+				<Texture><Color r="0" g="0" b="0" a="0.7" /></Texture>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderTopRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderTopRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="-4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="-4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\Buffology\media\border">
-					<Size>
-						<AbsDimension x="10" y="10" />
-					</Size>
+				<Texture name="$parentBorderBottomRight" file="Interface\AddOns\PredatorLoot\gfx\border">
+					<Size><AbsDimension x="10" y="10" /></Size>
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="4" y="-4"/>
-							</Offset>
+							<Offset><AbsDimension x="4" y="-4"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderTop" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderTop" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0" bottom="0.33333" />
 				</Texture>
-				<Texture name="$parentBorderRight" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderRight" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.66666" right="1" top="0.33333" bottom="0.66666" />
 				</Texture>
-				<Texture name="$parentBorderBottom" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderBottom" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.33333" right="0.66666" top="0.66666" bottom="1" />
 				</Texture>
-				<Texture name="$parentBorderLeft" file="Interface\AddOns\Buffology\media\border">
+				<Texture name="$parentBorderLeft" file="Interface\AddOns\PredatorLoot\gfx\border">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
+							<Offset><AbsDimension x="0" y="0"/></Offset>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="0.33333" top="0.33333" bottom="0.66666" />

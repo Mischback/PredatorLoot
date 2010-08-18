@@ -6,17 +6,22 @@ local settings = ns.settings
 local core = {}
 PredatorLootFunctions = {}
 local PredatorLootTrigger = CreateFrame('Frame', nil, UIParent)
+local PredatorLootGroupLootAnchor = CreateFrame('Frame', nil, UIParent)
+PredatorLootGroupLootAnchor:SetWidth(10) PredatorLootGroupLootAnchor:SetHeight(10)
+PredatorLootGroupLootAnchor:SetPoint('CENTER', UIParent, 'TOP', 250, -250)
 local PredatorLootFrame = CreateFrame('Frame', 'PredatorLootWindow', UIParent, 'PredatorLootFrameTemplate')
 local PLMLM = CreateFrame('Frame', 'PredatorLootMasterLooterManagement', UIParent, 'PredatorLootMasterLooterManagementTemplate')
 PLMLM.winner = ''
 PLMLM.lootLink = nil
-core.slots = {}
+core.LootSlots = {}
+core.RollSlots = {}
+core.CancelledRolls = {}
 core.AnnounceChannel = ''
 core.IsMasterLooter = false
 core.RollInProgress = false
 core.MasterLooterRaidClasses = {}
 core.RollCapture = {}
-core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
+
 
 -- ***** GENERAL FUNCTIONS ***************************************************************
 
@@ -54,7 +59,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		-- debugging('SetAnnounceChannel(): '..core.AnnounceChannel)
 	end
 
-	--[[
+	--[[ Sends a chat message to the apropriate channel
 		VOID SendMessage(STRING text, STRING channel)
 	]]
 	core.SendMessage = function(text, channel)
@@ -64,7 +69,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		SendChatMessage(text, channel)
 	end
 
-	--[[
+	--[[ Generic on click handler
 		VOID LootWindowClick(FRAME self, STRING button, FRAME row)
 	]]
 	core.LootWindowClick = function(self, button, row)
@@ -72,7 +77,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		if ( button == 'LeftButton' ) then
 			if (IsModifierKeyDown()) then
 				-- if ( core.IsMasterLooter ) then
-					if ( IsAltKeyDown() and IsShiftKeyDown() ) then
+					if ( IsAltKeyDown() and IsControlKeyDown() ) then
 						core.SetItemToBeRolled(slot)
 					else
 						HandleModifiedItemClick(GetLootSlotLink(slot))
@@ -98,7 +103,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 
 -- ***** LOOT WINDOW **********************************************************************
 
-	--[[
+	--[[ Builds the loot window
 		VOID OpenLoot()
 	]]
 	core.OpenLoot = function()
@@ -107,10 +112,10 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		local i, row, icon, name, count, lootTexture, lootName, lootQuantity, lootLink, lootRarity, color
 		for i = 1, itemCount do
 
-			if ( not core.slots[i] ) then
-				core.slots[i] = CreateFrame('Frame', 'PredatorLootRow'..i, PredatorLootFrame, 'PredatorLootFrameRowTemplate')
+			if ( not core.LootSlots[i] ) then
+				core.LootSlots[i] = CreateFrame('Frame', 'PredatorLootRow'..i, PredatorLootFrame, 'PredatorLootFrameRowTemplate')
 			end
-			row = core.slots[i]
+			row = core.LootSlots[i]
 			icon = _G['PredatorLootRow'..i..'IconIconTexture']
 			name = _G['PredatorLootRow'..i..'Name']
 			count = _G['PredatorLootRow'..i..'IconLootCount']
@@ -123,7 +128,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 			elseif ( LootSlotIsCoin(i) ) then
 				lootLink = nil
 				lootRarity = 1
-				lootName = string.gsub(lootname, '\n', ' ', 1, true)
+				lootName = string.gsub(lootName, '\n', ' ', 1, true)
 			end
 
 			row:SetID(i)
@@ -140,7 +145,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 			if ( i == 1 ) then
 				row:SetPoint('TOP', PredatorLootFrame, 'TOP', 0, -15)
 			else
-				row:SetPoint('TOP', core.slots[i-1], 'BOTTOM', 0, -15)
+				row:SetPoint('TOP', core.LootSlots[i-1], 'BOTTOM', 0, -15)
 			end
 
 			row:Show()
@@ -149,16 +154,93 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		PredatorLootFrame:Show()
 	end
 
-	--[[
+	--[[ Hides the loot-window
 		VOID CloseLoot()
 	]]
 	core.CloseLoot = function()
 		-- debugging('CloseLoot()')
 		local v
-		for _, v in pairs(core.slots) do
+		for _, v in pairs(core.LootSlots) do
 			v:Hide()
 		end
 		PredatorLootFrame:Hide()
+	end
+
+
+-- ***** GROUP LOOT ***********************************************************************
+
+	--[[
+	
+	]]
+	core.CancelRollEvent = function(frame, event, rollID)
+		core.CancelledRolls[rollID] = true
+		if ( frame.rollID == rollID ) then
+			frame.rollID = nil
+			frame.timeLeft = nil
+			frame.itemLink = nil
+			frame:Hide()
+		end
+	end
+
+	--[[
+	
+	]]
+	core.StartGroupLoot = function(rollID, timeLeft)
+		if ( core.CancelledRolls[rollID] ) then return end
+
+		local frame = nil
+		local k, v, frameName, name, icon, statusbar, bop, buttonNeed, buttonGreed, buttonDisEnchant, color, lootTexture, lootName, lootRarity, lootBoP, canNeed, canGreed, canDisEnchant
+
+		for _, v in ipairs(core.RollSlots) do
+			if ( not v.rollID ) then
+				frame = v
+			end
+		end
+		if ( not frame ) then
+			frame = CreateFrame('Frame', 'PredatorLootGroupLoot'..rollID, UIParent, 'PredatorLootGroupLootTemplate')
+			frame:RegisterEvent('CANCEL_LOOT_ROLL')
+			frame:SetScript('OnEvent', core.CancelRollEvent)
+			table.insert(core.RollSlots, frame)
+		end
+
+		frameName = frame:GetName()
+		icon = _G[frameName..'IconIconTexture']
+		bop = _G[frameName..'IconLootCount']
+		name = _G[frameName..'NameFrameName']
+		statusbar = _G[frameName..'Timer']
+		buttonNeed = _G[frameName..'NeedButton']
+		buttonGreed = _G[frameName..'GreedButton']
+		buttonDisEnchant = _G[frameName..'DisEnchantButton']
+
+		frame.rollID = rollID
+		frame.itemLink = GetLootRollItemLink(rollID)
+
+		lootTexture, lootName, _, lootRarity, lootBoP, canNeed, canGreed, canDisEnchant = GetLootRollItemInfo(rollID)
+		color = ITEM_QUALITY_COLORS[lootRarity]
+
+		icon:SetTexture(lootTexture)
+		bop:SetText(lootBoP and 'BoP' or 'BoE')
+		name:SetText(lootName)
+		name:SetVertexColor(color.r, color.g, color.b)
+		statusbar:SetMinMaxValues(0, timeLeft)
+		statusbar:SetValue(timeLeft)
+		if canNeed then buttonNeed:Enable() else buttonNeed:Disable() end
+		if canGreed then buttonGreed:Enable() else buttonGreed:Disable() end
+		if canDisEnchant then buttonDisEnchant:Enable() else buttonDisEnchant:Disable() end
+		SetDesaturation(buttonNeed:GetNormalTexture(), not canNeed)
+		SetDesaturation(buttonGreed:GetNormalTexture(), not canGreed)
+		SetDesaturation(buttonDisEnchant:GetNormalTexture(), not canDisEnchant)
+
+		for k, v in ipairs(core.RollSlots) do
+			if ( v:IsShown() ) then
+				if ( k == 1 ) then
+					v:SetPoint('TOPLEFT', PredatorLootGroupLootAnchor, 'TOPLEFT', 0, 0)
+				else
+					v:SetPoint('TOPLEFT', core.RollSlots[k-1], 'BOTTOMLEFT', 0, -50)
+				end
+			end
+		end
+		frame:Show()
 	end
 
 
@@ -176,20 +258,26 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 				elseif ( masterlooterRaidID == GetNumRaidMembers() ) then
 					if ( masterlooterPartyID == 0 ) then
 						core.IsMasterLooter = true
+						PLMLM:Show()
 					end
 				end
 			elseif ( core.AnnounceChannel == 'PARTY' ) then
 				if ( masterlooterPartyID == 0 ) then
 					core.IsMasterLooter = true
+					PLMLM:Show()
+				else
+					core.IsMasterLooter = false
+					PLMLM:Hide()
 				end
 			end
 		else
 			core.IsMasterLooter = false
+			PLMLM:Hide()
 		end
 	end
 
-	--[[
-	
+	--[[ Assigns an item to a raid-/group- member
+		VOID MasterLootAssignLoot()
 	]]
 	core.MasterLootAssignLoot = function(self)
 		local candidate = self.value['Characters']
@@ -205,7 +293,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		CloseDropDownMenus()
 	end
 
-	--[[
+	--[[ Builds the MasterLooter DropDown
 		VOID InitializeMasterLooterDropDown(FRAME self, INT level)
 	]]
 	core.InitializeMasterLooterDropDown = function(self, level)
@@ -247,11 +335,11 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		end
 	end
 
-	--[[
+	--[[ Determines which classes are in your raid to prepare the MasterLooterDropDown
 		VOID UpdateDropDownClasses()
 	]]
 	core.UpdateDropDownClasses = function()
-		debugging('ClassDropDown')
+		-- debugging('ClassDropDown')
 		local i, classLoc, class, maxPlayers
 
 		core.MasterLooterRaidClasses['DEATHKNIGHT'] = false
@@ -285,7 +373,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		UIDropDownMenu_Initialize(PredatorLootMasterLooterDropDown, core.InitializeMasterLooterDropDown, 'MENU')
 	end
 
-	--[[
+	--[[ 
 		VOID SetItemToBeRolled(INT slot)
 	]]
 	core.SetItemToBeRolled = function(slot)
@@ -294,7 +382,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		_G['PredatorLootMasterLooterManagementIconIconTexture']:SetTexture(GetItemIcon(PLMLM.lootLink))
 	end
 
-	--[[
+	--[[ Listens and parses the roll-lines from the chat
 		VOID RollListener(STRING line)
 	]]
 	core.RollListener = function(line)
@@ -310,7 +398,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		end
 	end
 
-	--[[
+	--[[ Evaluate the recorded rolls and announces the winner
 		VOID EvaluateRolls()
 	]]
 	core.EvaluateRolls = function()
@@ -326,7 +414,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 				end
 			end
 		end
-		
+
 		if ( winnerarray ) then
 			local playername, playerroll = '', 0
 			for k, v in pairs(winnerarray) do
@@ -339,14 +427,14 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 			PLMLM.winner = playername
 			core.SendMessage('Winner: '..playername, core.AnnounceChannel)
 		else
-			core.SendMessage('Wird gedisst!', core.AnnounceChannel)
+			core.SendMessage(PredatorLootStrings.ToBeDisenchated, core.AnnounceChannel)
 		end
 	end
 
 
 -- ***** TEMPLATE FUNCTIONS (global!) *****************************************************
 
-	--[[
+	--[[ Click-handler for rows in the loot window
 		VOID HandleRowClick(FRAME self, STRING button)
 	]]
 	PredatorLootFunctions.HandleRowClick = function(self, button)
@@ -354,7 +442,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		core.LootWindowClick(self, button, row)
 	end
 
-	--[[
+	--[[ Click-handler for the item icons in the loot window
 		VOID HandleIconClick(BUTTON self, STRING button)
 	]]
 	PredatorLootFunctions.HandleIconClick = function(self, button)
@@ -362,7 +450,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		core.LootWindowClick(self, button, row)
 	end
 
-	--[[
+	--[[ OnMouseOver-handler for the loot-window
 		VOID ShowTooltip(BUTTON self)
 	]]
 	PredatorLootFunctions.ShowTooltip = function(self)
@@ -374,7 +462,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		end
 	end
 
-	--[[
+	--[[  OnMouseOver-handler for the MasterLooter-window
 		VOID ShowMasterLooterTooltip(BUTTON self)
 	]]
 	PredatorLootFunctions.ShowMasterLooterTooltip = function(self)
@@ -386,6 +474,18 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 	end
 
 	--[[
+	
+	]]
+	PredatorLootFunctions.ShowGroupLootTooltip = function(self)
+		local itemLink = self:GetParent().itemLink
+		if ( itemLink ) then
+			GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+			GameTooltip:SetHyperlink(itemLink)
+			CursorUpdate(self)
+		end
+	end
+
+	--[[ Click-handler for the item icon in the MasterLooter-window
 		VOID HandleMasterLooterIconClick(BUTTON self, STRING button)
 	]]
 	PredatorLootFunctions.HandleMasterLooterIconClick = function(self, button)
@@ -397,7 +497,7 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		end
 	end
 
-	--[[
+	--[[ Starts a roll-period
 		VOID StartLootPeriod()
 	]]
 	PredatorLootFunctions.StartLootPeriod = function()
@@ -408,14 +508,14 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 				core.RollInProgress = true
 				wipe(core.RollCapture)
 				PredatorLootTrigger:RegisterEvent('CHAT_MSG_SYSTEM')
-				core.SendMessage(PLMLM.lootLink, 'RAID_WARNING')
+				core.SendMessage(PredatorLootStrings.StartRollFor..PLMLM.lootLink, 'RAID_WARNING')
 			else
 				debugging(PredatorLootStrings.NoItem)
 			end
 		end
 	end
 
-	--[[
+	--[[ Ends a roll period
 		VOID EndLootPeriod()
 	]]
 	PredatorLootFunctions.EndLootPeriod = function()
@@ -428,6 +528,35 @@ core.RollPattern = '(%S+) %D+ (%d+)%D+%((%d+)%-(%d+)%)'
 		end
 	end
 
+	--[[
+		VOID AnnounceLootRules()
+	]]
+	PredatorLootFunctions.AnnounceLootRules = function()
+		if ( core.AnnounceChannel ~= '' and core.AnnounceChannel ~= 'SOLO' ) then 
+			local v
+			for _, v in ipairs(settings.options.AcceptedRolls) do
+				core.SendMessage(settings.options.RollDescriptions[v], core.AnnounceChannel)
+			end
+		else
+			debugging(PredatorLootStrings.NoAnnounce)
+		end
+	end
+
+	--[[
+		VOID GroupLootRoll(BUTTON button, INT ROLL)
+	]]
+	PredatorLootFunctions.GroupLootRoll = function(button, roll)
+		local rollID = button:GetParent().rollID
+		RollOnLoot(rollID, roll)
+	end
+
+	--[[
+		VOID GroupLootTimerOnUpdate(FRAME self)
+	]]
+	PredatorLootFunctions.GroupLootTimerOnUpdate = function(self)
+		self:SetValue(GetLootRollTimeLeft(self:GetParent().rollID))
+	end
+
 
 -- ****************************************************************************************
 
@@ -438,6 +567,9 @@ PredatorLootTrigger:RegisterEvent('PARTY_LEADER_CHANGED')
 PredatorLootTrigger:RegisterEvent('PARTY_LOOT_METHOD_CHANGED')
 PredatorLootTrigger:RegisterEvent('PARTY_MEMBERS_CHANGED')
 PredatorLootTrigger:RegisterEvent('RAID_ROSTER_UPDATE')
+PredatorLootTrigger:RegisterEvent('START_LOOT_ROLL')
+PredatorLootTrigger:RegisterEvent('PLAYER_REGEN_DISABLED')
+PredatorLootTrigger:RegisterEvent('PLAYER_REGEN_ENABLED')
 PredatorLootTrigger:SetScript('OnEvent', function(self, event, addon)
 
 	if ( event == 'LOOT_OPENED' ) then
@@ -451,14 +583,22 @@ PredatorLootTrigger:SetScript('OnEvent', function(self, event, addon)
 		core.SetAnnounceChannel()
 		core.SetMasterLooter()
 		core.UpdateDropDownClasses()
+	elseif ( event == 'START_LOOT_ROLL' ) then
+		core.StartGroupLoot(arg1, arg2)
 	elseif ( event == 'CHAT_MSG_SYSTEM' ) then
 		core.RollListener(arg1)
+	elseif ( event == 'PLAYER_REGEN_DISABLED' ) then
+		PLMLM:Hide()
+	elseif ( event == 'PLAYER_REGEN_ENABLED' and core.IsMasterLooter ) then
+		PLMLM:Show()
 	elseif ( event == 'ADDON_LOADED' ) then
 		if ( addon ~= ADDON_NAME ) then return end
 
 		debugging('PredatorLoot loaded...')
 
 		PredatorLootTrigger:UnregisterEvent('ADDON_LOADED')
+		UIParent:UnregisterEvent('START_LOOT_ROLL')
+		UIParent:UnregisterEvent('CANCEL_LOOT_ROLL')
 
 		-- do
 			-- if ( not PredatorLootOptions ) then

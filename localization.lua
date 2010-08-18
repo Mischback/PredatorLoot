@@ -24,5 +24,8 @@ local t = GetLocale()
 		['NoRollInProgress'] = 'FAIL: No roll in progress!',
 		['AssignmentFailed'] = 'FAIL: Assignment failed! Please note that the assignment only works while the loot window is open!',
 		['NoItem'] = 'FAIL: No item selected to roll about!',
+		['NoAnnounce'] = 'FAIL: You are not in a group!',
+		['ToBeDisenchated'] = 'Nobody rolled...',
+		['StartRollFor'] = 'Please roll for ',
 	}
 -- end
